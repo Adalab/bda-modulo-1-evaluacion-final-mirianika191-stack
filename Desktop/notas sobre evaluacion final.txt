@@ -1,0 +1,129 @@
+Estructura General de la Explicación
+Para cada método, puedes seguir esta estructura:
+
+Propósito: ¿Qué hace este método? (El "qué").
+
+Implementación y Razonamiento: ¿Cómo lo hace y por qué lo diseñé de esa manera? (El "cómo" y el "porqué").
+
+Puntos Clave a Destacar: Aspectos técnicos importantes o buenas prácticas que aplicaste.
+
+Análisis Detallado de tu Código
+Aquí tienes la explicación de cada parte de tu clase TiendaOnline.
+
+1. El Constructor (__init__)
+Propósito: El método __init__ es el constructor de la clase. Su función es inicializar cada nueva instancia de TiendaOnline con un estado predeterminado y limpio.
+
+Implementación y Razonamiento:
+
+self.inventario = []: He decidido que el inventario sea un atributo de instancia, inicializado como una lista vacía. La elección de una lista de diccionarios es ideal aquí porque nos permite almacenar una colección de productos donde cada uno tiene múltiples propiedades (nombre, precio, cantidad) de forma estructurada y legible.
+
+self.ventas_totales = 0.0: Este atributo almacena el total de ventas. Lo inicializo en 0.0 para indicar explícitamente que es un número de punto flotante (un float), lo cual es adecuado para manejar valores monetarios que pueden incluir céntimos.
+
+Puntos Clave a Destacar en la Entrevista:
+
+"Utilicé una lista de diccionarios para el inventario porque ofrece flexibilidad. Puedo añadir o quitar productos fácilmente, y cada producto es un objeto autocontenido con sus propios datos."
+
+"La inicialización de los atributos dentro de __init__ asegura que cada objeto TiendaOnline que se cree sea independiente y comience con un estado consistente."
+
+2. Método agregar_producto(self, nombre, precio, cantidad)
+Propósito: Este método gestiona la lógica para añadir productos nuevos al inventario o para actualizar la cantidad de un producto que ya existe.
+
+Implementación y Razonamiento:
+
+Búsqueda previa: Antes de añadir un producto, recorro el inventario con un bucle for. El objetivo es evitar duplicados.
+
+Comparación insensible a mayúsculas: Utilizo producto['nombre'].lower() == nombre.lower(). Esto es una buena práctica porque evita tener el mismo producto registrado con variaciones de mayúsculas (por ejemplo, "Camisa" y "camisa"). Lo trato como si fuera el mismo artículo.
+
+Actualización si existe: Si encuentro el producto, simplemente actualizo su cantidad (producto['cantidad'] += cantidad) y utilizo return para salir del método inmediatamente. Esto es eficiente, ya que una vez que encuentro y actualizo el producto, no necesito seguir recorriendo el resto de la lista.
+
+Creación si no existe: Si el bucle for termina sin haber encontrado el producto (es decir, sin haber ejecutado el return), significa que el producto es nuevo. En ese caso, creo un nuevo diccionario y lo añado a la lista self.inventario con .append().
+
+Puntos Clave a Destacar en la Entrevista:
+
+"Mi enfoque principal aquí es la robustez y la eficiencia. La comparación con .lower() previene datos duplicados, y el return temprano detiene la ejecución en cuanto se completa la tarea, evitando iteraciones innecesarias."
+
+"Este método maneja dos casos de uso en uno: añadir y actualizar, lo que centraliza la lógica de gestión de productos."
+
+3. Método ver_inventario(self)
+Propósito: Proporcionar una visualización clara y formateada de todos los productos actualmente en el inventario.
+
+Implementación y Razonamiento:
+
+Manejo de caso vacío: Primero, compruebo si el inventario está vacío con if not self.inventario. Es importante manejar este "caso borde" (edge case) para dar una respuesta útil al usuario en lugar de no mostrar nada.
+
+Iteración y formato: Si hay productos, itero a través de la lista. Para cada producto, utilizo una f-string para imprimir sus detalles de una manera legible y organizada, incluyendo el símbolo de la moneda para el precio.
+
+Puntos Clave a Destacar en la Entrevista:
+
+"Considero fundamental la experiencia del usuario. Por eso, el método no solo muestra los datos, sino que los formatea de manera clara y maneja el caso de un inventario vacío para evitar confusiones."
+
+4. Método buscar_producto(self, nombre)
+Propósito: Localizar un producto específico en el inventario por su nombre y mostrar sus detalles.
+
+Implementación y Razonamiento:
+
+Lógica de búsqueda: El patrón es similar al de agregar_producto. Recorro la lista y uso .lower() para una búsqueda insensible a mayúsculas.
+
+Salida temprana: Si encuentro el producto, imprimo sus detalles y uso return para finalizar.
+
+Mensaje de "no encontrado": Si el bucle completa su ejecución sin encontrar el producto, el código que está después del bucle se ejecuta, mostrando un mensaje claro de que el producto no fue encontrado. Esta estructura es muy limpia y fácil de entender.
+
+Puntos Clave a Destacar en la Entrevista:
+
+"La eficiencia es clave en la búsqueda. Al usar return después de encontrar el primer resultado, me aseguro de que la función termine lo antes posible."
+
+"Nuevamente, la robustez es importante, por eso la búsqueda es insensible a mayúsculas."
+
+5. Método actualizar_stock(self, nombre, cantidad)
+Propósito: Modificar la cantidad de stock de un producto existente. Permite tanto añadir (cantidad positiva) como reducir (cantidad negativa) el stock.
+
+Implementación y Razonamiento:
+
+La lógica es casi idéntica a la de buscar_producto. La única diferencia es que, en lugar de solo imprimir los detalles, modifica el valor de producto['cantidad'] += cantidad. Esta operación funciona tanto para sumar como para restar. Después, imprime un mensaje de confirmación.
+
+Si no encuentra el producto, informa al usuario de ello.
+
+Puntos Clave a Destacar en la Entrevista:
+
+"Este método es un buen ejemplo de reutilización de patrones de código. La lógica de búsqueda es la misma que en otros métodos, lo que demuestra consistencia en el diseño."
+
+"El uso de += lo hace versátil para incrementar o decrementar el stock con una sola función."
+
+6. Método eliminar_producto(self, nombre)
+Propósito: Eliminar por completo un producto del inventario.
+
+Implementación y Razonamiento:
+
+Uso de enumerate: Aquí, necesito no solo el producto, sino también su índice en la lista para poder eliminarlo. Por eso, utilizo enumerate(self.inventario). Esto me da tanto el índice (i) como el producto (producto) en cada iteración.
+
+Eliminación por índice: Una vez que encuentro el producto (usando la misma lógica de búsqueda de siempre), utilizo self.inventario.pop(i). El método .pop(i) es una forma eficiente de eliminar un elemento de una lista cuando conoces su índice.
+
+Salida y mensaje de error: Como en los otros métodos, uso return después de la eliminación y muestro un mensaje si el producto no se encuentra.
+
+Puntos Clave a Destacar en la Entrevista:
+
+"Elegí enumerate y pop(i) porque es la forma más directa y eficiente de eliminar un elemento de una lista durante la iteración. Buscar el elemento y luego eliminarlo por su valor con .remove() sería menos eficiente, ya que implicaría una segunda búsqueda."
+
+7. Método calcular_valor_inventario(self)
+Propósito: Calcular el valor monetario total de todo el inventario (la suma del precio de cada producto multiplicado por su cantidad).
+
+Implementación y Razonamiento:
+
+Variable acumuladora: Inicializo una variable valor_total en 0. Esta variable servirá como un acumulador.
+
+Cálculo en bucle: Recorro cada producto en el inventario. En cada paso, calculo el valor de ese producto (producto['precio'] * producto['cantidad']) y lo sumo al valor_total.
+
+Doble salida (imprimir y devolver): Al final, imprimo un mensaje formateado con el valor total. Además, devuelvo el valor (return valor_total). Esto es una excelente práctica porque hace que el método sea más reutilizable. Otro programador podría querer usar el valor calculado para otros fines, no solo para imprimirlo.
+
+Puntos Clave a Destacar en la Entrevista:
+
+"Este método demuestra el patrón de acumulación, un concepto fundamental en programación."
+
+"Decidí que el método no solo imprimiera el resultado, sino que también lo devolviera. Esto separa la lógica de cálculo de la de presentación, haciendo el método más modular y útil en un programa más grande."
+
+Posibles Mejoras a Mencionar (si te preguntan)
+Demostrar que has pensado en cómo mejorar tu propio código es una señal muy positiva.
+
+Escalabilidad del Inventario: "Para una tienda con miles de productos, buscar en una lista (que tiene una complejidad de O(n)) puede volverse lento. Una mejora futura sería usar un diccionario en lugar de una lista para el inventario, donde las claves fueran los nombres de los productos. Esto permitiría búsquedas, actualizaciones y eliminaciones casi instantáneas (complejidad O(1))."
+
+Separación de Responsabilidades: "En una aplicación más grande, separaría la lógica de la tienda de la interacción con el usuario. Por ejemplo, los métodos devolverían datos o True/False, y otra parte del código se encargaría de los print. Esto sigue el principio de Responsabilidad Única."
